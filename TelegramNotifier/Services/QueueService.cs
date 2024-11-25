@@ -26,12 +26,12 @@ namespace TelegramNotifier.Services
             var channel = await connection.CreateChannelAsync();
 
             await channel.ExchangeDeclareAsync(exchange: "notifications",
-                type: ExchangeType.Fanout);
+                type: ExchangeType.Direct, durable: true);
 
             // declare a server-named queue
             QueueDeclareOk queueDeclareResult = await channel.QueueDeclareAsync();
             string queueName = queueDeclareResult.QueueName;
-            await channel.QueueBindAsync(queue: queueName, exchange: "notifications", routingKey: string.Empty);
+            await channel.QueueBindAsync(queue: queueName, exchange: "notifications", routingKey: "key");
 
             _logger.LogInformation("QueueService: Ready.");
 
